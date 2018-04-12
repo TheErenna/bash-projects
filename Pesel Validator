@@ -1,0 +1,38 @@
+# bin/bash
+
+echo -n "Podaj swój PESEL: "
+read pesel
+test=$[`echo $pesel | grep -E "^[0-9]{11}$" | wc -l`]
+
+if [ $test = 0 ]
+then
+  echo "Niepoprawny PESEL."
+  return
+fi
+
+wagi=(0 1 3 7 9 1 3 7 9 1 3 1)
+# echo ${wagi[*]} 
+
+suma=0
+for ((i=1;i<=11;i++))
+do
+  tablica[$i]=$[`echo $pesel | cut -c$i`]
+  suma=$[$suma + ${tablica[$i]} * ${wagi[$i]}]
+done
+# echo ${tablica[*]} 
+
+reszta=$[$suma % 10]
+if [ $reszta = 0 ]
+then
+  echo "PESEL poprawny!"
+
+  tmp=$[${tablica[10]} % 2]
+  if [ $tmp  = 0 ]
+  then
+    echo "Kobieta"
+  else
+    echo "Facet"
+  fi
+else
+  echo "PESEL niepoprawny!"
+fi
